@@ -1,0 +1,70 @@
+{
+  "name": "h-docker-publish",
+  "version": "0.0.2",
+  "packageManager": "pnpm@7.4.0",
+  "description": "解决智电云项目发布问题",
+  "author": "lalahuang",
+  "license": "MIT",
+  "homepage": "https://github.com/lalahuang/h-docker-publish",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lalahuang/h-docker-publish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lalahuang/h-docker-publish/issues"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "ps": "bin/ps.mjs",
+    "pr": "bin/pr.mjs"
+  },
+  "files": [
+    "dist",
+    "bin"
+  ],
+  "scripts": {
+    "prepublishOnly": "npm run build",
+    "ps": "esno src/hPublish/ps.ts",
+    "pr": "esno src/hPublish/pr.ts",
+    "build": "unbuild",
+    "stub": "unbuild --stub",
+    "release": "bumpp && npm publish",
+    "lint": "eslint .",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.34.1",
+    "@types/ini": "^1.3.31",
+    "@types/node": "^18.11.18",
+    "@types/prompts": "^2.4.2",
+    "@types/which": "^2.0.1",
+    "bumpp": "^8.2.1",
+    "eslint": "^8.32.0",
+    "esno": "^0.16.3",
+    "execa": "^6.1.0",
+    "fast-glob": "^3.2.12",
+    "find-up": "^6.3.0",
+    "fzf": "^0.5.1",
+    "ini": "^3.0.1",
+    "kleur": "^4.1.5",
+    "prompts": "^2.4.2",
+    "rimraf": "^4.1.1",
+    "terminal-link": "^3.0.0",
+    "typescript": "^4.9.4",
+    "unbuild": "^1.1.1",
+    "vitest": "^0.27.2",
+    "which": "^3.0.0"
+  },
+  "eslintConfig": {
+    "extends": "@antfu"
+  }
+}
