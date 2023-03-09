@@ -1,6 +1,6 @@
 {
   "name": "h-docker-publish",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "packageManager": "pnpm@7.4.0",
   "description": "解决智电云项目发布问题",
   "author": "lalahuang",
@@ -24,8 +24,8 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "bin": {
-    "ps": "bin/ps.mjs",
-    "pr": "bin/pr.mjs"
+    "dps": "bin/ps.mjs",
+    "dpr": "bin/pr.mjs"
   },
   "files": [
     "dist",
