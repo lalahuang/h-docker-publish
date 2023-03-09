@@ -21,7 +21,7 @@ const storageDir = resolve(tmpdir(), 'lalahuang')
 const storagePath = resolve(storageDir, 'publish_storage.json')
 
 export async function load(fn?: (storage: Storage) => Promise<boolean> | boolean) {
-  console.log('storagePath: ', storagePath);
+  // console.log('storagePath: ', storagePath);
 
   if (!storage) {
     storage = existsSync(storagePath)
@@ -38,8 +38,8 @@ export async function load(fn?: (storage: Storage) => Promise<boolean> | boolean
 }
 
 export async function dump() {
-  console.log('storage: ', storage);
-  console.log('storageDir: ', storageDir);
+  // console.log('storage: ', storage);
+  // console.log('storageDir: ', storageDir);
 
   if (storage) {
     if (!existsSync(storageDir))

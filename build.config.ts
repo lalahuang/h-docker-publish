@@ -1,5 +1,6 @@
 import { defineBuildConfig } from 'unbuild'
 import fg from 'fast-glob'
+import strip from 'rollup-plugin-strip';
 
 export default defineBuildConfig({
   entries: [
@@ -14,5 +15,14 @@ export default defineBuildConfig({
   rollup: {
     emitCJS: true,
     inlineDependencies: true,
+
   },
+  // hooks: {
+  //   'rollup:options': (ctx, options) => {
+  //     if (!Array.isArray(options.plugins)) {
+  //       options.plugins = options.plugins ? [options.plugins] : []
+  //     }
+  //     options.plugins.push(strip())
+  //   },
+  // },
 })

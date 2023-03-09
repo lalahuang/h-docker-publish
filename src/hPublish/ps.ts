@@ -12,12 +12,13 @@ import { dump, load, SettingInfo } from '../storage'
 import c from 'kleur'
 import { Fzf } from 'fzf';
 //保存 
-const setting: SettingInfo = {
+let setting: SettingInfo = {
   publishKey: "",
   buildCommand: "",
   mirrorImage: "",
   projectPath: ""
 };
+let isEdit = false
 
 // 设置唯一key
 const setKey = async () => {
@@ -25,21 +26,35 @@ const setKey = async () => {
     const storage = await load()
     const { publishKey } = await prompts({
       name: 'publishKey',
-      message: '设置发布key（唯一标识符）',
+      message: '设置发布key（唯一标识符：项目名-版本环境）',
       type: 'text',
     })
-    console.log('publishKey: ', publishKey);
+
     // 检测是否重复
-    if (storage.settingInfos?.filter(item => item.publishKey == publishKey)?.length) {
-      throw new Error("唯一标识符已存在");
+    const isExistedSetting = storage.settingInfos?.find(item => item.publishKey == publishKey);
+    // if (storage.settingInfos?.filter(item => item.publishKey == publishKey)?.length) {
+
+    // }
+    if (isExistedSetting) {
+      const { res } = await prompts({
+        name: 'res',
+        message: 'key已存在!，是否继续配置？（覆盖原来的配置信息）',
+        type: 'confirm',
+      })
+      if (!res)
+        throw new Error();
+      isEdit = true
+      setting = isExistedSetting
     }
+
     if (!publishKey)
-      return
+      throw new Error("标识符必填！！！");
+
     setting.publishKey = publishKey;
     // storage.settingInfos = [...storage?.settingInfos ?? [], setting]
     // dump()
-  } catch (e) {
-    console.warn(e)
+  } catch (e: any) {
+    console.warn(c.yellow(e.message))
     process.exit(1)
   }
 }
@@ -94,14 +109,16 @@ const setBuildCommand = async () => {
         return results.map(r => choices.find(c => c.value === r.item.key))
       },
     })
-    if (!fn)
-      return;
+    if (!fn) {
+      throw new Error("打包脚本必填！！！");
+    }
+
     setting.buildCommand = fn;
     setting.projectPath = process.cwd();
 
 
-  } catch (e) {
-    console.warn(e)
+  } catch (e: any) {
+    console.warn(c.yellow(e.message))
     process.exit(1)
   }
 }
@@ -112,16 +129,16 @@ const setMirrorImage = async () => {
     const storage = await load()
     const { mirrorImage } = await prompts({
       name: 'mirrorImage',
-      message: '设置docker镜像完整地址（如：harbor.chint.com/zdcloud/admin-ui:latest）',
+      message: '设置docker镜像完整地址（如：harbor.test.com/testNameSpace/testMirrorName:latest）',
       type: 'text',
     })
     if (!mirrorImage)
-      return;
+      throw new Error("镜像地址必填！！！");
 
     setting.mirrorImage = mirrorImage;
 
-  } catch (e) {
-    console.warn(e)
+  } catch (e: any) {
+    console.warn(c.yellow(e.message))
     process.exit(1)
   }
 }
@@ -170,18 +187,25 @@ const runBuild = async () => {
 
 // 询问
 async function init() {
-  const storage = await load()
-  // // 设置key
-  await setKey();
-  // 设置打包命令
-  await setBuildCommand();
-  // 设置镜像地址
-  await setMirrorImage();
-  storage.settingInfos = [...storage?.settingInfos ?? [], setting]
-  await dump();
-  // 复制文件
-  await setDefaultConfig();
-  await runBuild();
+  try {
+    const storage = await load()
+    // // 设置key
+    await setKey();
+    // 设置打包命令
+    await setBuildCommand();
+    // 设置镜像地址
+    await setMirrorImage();
+    if (!isEdit)
+      storage.settingInfos = [...storage?.settingInfos ?? [], setting]
+    await dump();
+    // 复制文件
+    await setDefaultConfig();
+    await runBuild();
+  } catch (e) {
+    console.warn(e)
+    process.exit(1)
+  }
+
 
 }
 
